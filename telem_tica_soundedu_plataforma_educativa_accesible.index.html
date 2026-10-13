@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="es" class="theme-yellow-black">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemática SoundEdu - Plataforma Educativa Accesible</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Base typography & focus styles for Accessibility */
+        :root {
+            --font-scale: 1rem;
+            --bg-primary: #09090b;
+            --bg-card: #121215;
+            --border-card: #27272a;
+            --border-highlight: #facc15;
+            --text-primary: #facc15;
+            --text-secondary: #f4f4f5;
+            --accent-color: #22d3ee;
+            --focus-ring: #22d3ee;
+        }
+
+        /* High Contrast Theme 1: Obsidian & Gold (Default Minimalist) */
+        .theme-yellow-black {
+            --bg-primary: #09090b;
+            --bg-card: #141417;
+            --border-card: #27272a;
+            --border-highlight: #facc15;
+            --text-primary: #facc15;
+            --text-secondary: #f4f4f5;
+            --accent-color: #38bdf8;
+            --focus-ring: #38bdf8;
+        }
+
+        /* High Contrast Theme 2: Midnight Blue */
+        .theme-blue-night {
+            --bg-primary: #030712;
+            --bg-card: #0f172a;
+            --border-card: #1e293b;
+            --border-highlight: #38bdf8;
+            --text-primary: #38bdf8;
+            --text-secondary: #f0f9ff;
+            --accent-color: #facc15;
+            --focus-ring: #facc15;
+        }
+
+        /* High Contrast Theme 3: Studio Light */
+        .theme-light-reading {
+            --bg-primary: #f8fafc;
+            --bg-card: #ffffff;
+            --border-card: #cbd5e1;
+            --border-highlight: #0284c7;
+            --text-primary: #0f172a;
+            --text-secondary: #1e293b;
+            --accent-color: #0284c7;
+            --focus-ring: #0284c7;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-secondary);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-size: var(--font-scale);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Visible high-contrast focus indicator for screen reader & keyboard navigation */
+        *:focus-visible {
+            outline: 3px solid var(--focus-ring) !important;
+            outline-offset: 3px !important;
+            box-shadow: 0 0 12px var(--focus-ring) !important;
+        }
+
+        /* Text highlighting during speech playback */
+        .speech-active {
+            background-color: var(--text-primary) !important;
+            color: #000000 !important;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px var(--text-primary);
+        }
+
+        /* Minimalist Card Styling */
+        .glass-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 1rem;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .glass-card:hover {
+            border-color: var(--border-highlight);
+        }
+
+        /* Button Styling */
+        .accessible-btn {
+            border: 1px solid var(--border-card);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .accessible-btn:hover {
+            border-color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        /* Soundwave animation bar */
+        @keyframes soundWave {
+            0%, 100% { height: 6px; }
+            50% { height: 28px; }
+        }
+        .wave-bar {
+            width: 4px;
+            background-color: var(--accent-color);
+            border-radius: 2px;
+            animation: soundWave 1.2s infinite ease-in-out;
+            display: inline-block;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.4s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.6s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.8s; }
+        .wave-paused {
+            animation-play-state: paused !important;
+            height: 8px !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-yellow-400 selection:text-black">
+
+    <!-- Skip to content link for keyboard & screen readers -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 bg-yellow-400 text-black px-5 py-3 text-lg font-bold rounded-xl shadow-2xl">
+        Saltar al contenido principal (Presiona Enter)
+    </a>
+
+    <!-- ARIA Live region for screen reader notifications -->
+    <div id="sr-announcer" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+
+    <!-- Header -->
+    <header class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50 p-4" role="banner">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+            
+            <!-- Brand & Logo -->
+            <div class="flex items-center space-x-3">
+                <!-- Vector Minimalist SVG Logo -->
+                <svg width="48" height="48" viewBox="0 0 100 100" class="flex-shrink-0" aria-label="Logo de Telemática SoundEdu" role="img">
+                    <title>Logo Telemática SoundEdu</title>
+                    <circle cx="50" cy="50" r="46" fill="#09090b" stroke="#facc15" stroke-width="3"/>
+                    <line x1="30" y1="70" x2="50" y2="30" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="70" y1="70" x2="50" y2="30" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="30" y1="70" x2="70" y2="70" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                    <circle cx="50" cy="30" r="6" fill="#facc15" />
+                    <circle cx="30" cy="70" r="5" fill="#38bdf8" />
+                    <circle cx="70" cy="70" r="5" fill="#38bdf8" />
+                    <path d="M 38 20 A 16 16 0 0 1 62 20" fill="none" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 28 12 A 28 28 0 0 1 72 12" fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-black tracking-tight text-yellow-400">
+                        Telemática <span class="text-sky-400">SoundEdu</span>
+                    </h1>
+                    <p class="text-xs font-medium text-zinc-400">Educación Sonora Adaptada</p>
+                </div>
+            </div>
+
+            <!-- Accessibility Toolbar -->
+            <div class="flex flex-wrap items-center gap-2" role="region" aria-label="Ajustes de accesibilidad">
+                
+                <!-- Theme Selector -->
+                <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1">
+                    <label for="theme-selector" class="sr-only">Tema de Contraste</label>
+                    <i class="fa-solid fa-palette text-yellow-400 mr-2 text-sm" aria-hidden="true"></i>
+                    <select id="theme-selector" onchange="changeTheme(this.value)" class="bg-transparent text-xs text-zinc-200 font-bold focus:outline-none cursor-pointer py-1">
+                        <option value="theme-yellow-black" class="bg-zinc-900 text-yellow-400">Contraste: Oro / Negro</option>
+                        <option value="theme-blue-night" class="bg-zinc-900 text-sky-400">Contraste: Azul Nocturno</option>
+                        <option value="theme-light-reading" class="bg-zinc-100 text-black">Contraste: Lectura Clara</option>
+                    </select>
+                </div>
+
+                <!-- Font Resizer -->
+                <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl p-1 space-x-1">
+                    <span class="text-xs text-zinc-400 font-semibold px-1" id="font-size-label">Texto:</span>
+                    <button onclick="adjustFontSize(-0.1)" class="accessible-btn px-2.5 py-0.5 bg-zinc-950 text-yellow-400 rounded-lg text-xs font-bold" aria-label="Disminuir texto">A-</button>
+                    <button onclick="resetFontSize()" class="accessible-btn px-2 py-0.5 bg-zinc-950 text-yellow-400 rounded-lg text-xs font-bold" aria-label="Restablecer texto">A</button>
+                    <button onclick="adjustFontSize(0.1)" class="accessible-btn px-2.5 py-0.5 bg-zinc-950 text-yellow-400 rounded-lg text-xs font-bold" aria-label="Aumentar texto">A+</button>
+                </div>
+
+                <!-- SFX Toggle -->
+                <button id="sfx-toggle-btn" onclick="toggleSFX()" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-zinc-200 text-xs font-bold rounded-xl flex items-center space-x-2" aria-label="Efectos de sonido activados. Presiona para silenciar">
+                    <i class="fa-solid fa-volume-high text-sky-400" id="sfx-icon"></i>
+                    <span id="sfx-status-text">Audio FX</span>
+                </button>
+
+                <!-- Help Modal Trigger -->
+                <button onclick="openHelpModal()" class="accessible-btn px-3 py-1.5 bg-yellow-400 text-black text-xs font-extrabold rounded-xl flex items-center space-x-1.5" aria-label="Atajos de teclado (Alt + H)">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>Atajos (Alt+H)</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sticky Global Audio Player Bar -->
+    <div class="sticky top-[73px] z-40 bg-zinc-950/90 backdrop-blur-md border-b border-zinc-800 p-3 shadow-xl" role="region" aria-label="Lector de Voz Principal">
+        <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
+            
+            <div class="flex items-center space-x-3">
+                <div class="p-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sky-400 flex items-center justify-center">
+                    <i class="fa-solid fa-headphones text-lg" aria-hidden="true"></i>
+                </div>
+                <div>
+                    <span class="text-xs font-semibold text-zinc-400 block">Lector de Voz</span>
+                    <span id="tts-status" class="text-xs font-bold text-yellow-400">Listo para reproducir</span>
+                </div>
+            </div>
+
+            <!-- Master Playback Controls -->
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="readEntirePage()" class="accessible-btn px-4 py-2 bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs rounded-xl flex items-center space-x-2" aria-label="Leer página completa (Alt + P)">
+                    <i class="fa-solid fa-play"></i>
+                    <span>Leer Todo</span>
+                </button>
+
+                <button id="pause-resume-btn" onclick="togglePauseResumeSpeech()" class="accessible-btn px-3.5 py-2 bg-zinc-900 text-sky-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Pausar o reanudar lectura">
+                    <i class="fa-solid fa-pause" id="pause-icon"></i>
+                    <span id="pause-btn-text">Pausar</span>
+                </button>
+
+                <button onclick="stopSpeech()" class="accessible-btn px-3.5 py-2 bg-rose-950 border border-rose-800 text-rose-200 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Detener voz (Alt + S)">
+                    <i class="fa-solid fa-stop"></i>
+                    <span>Detener</span>
+                </button>
+
+                <!-- Speed Control -->
+                <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1">
+                    <label for="speech-rate" class="text-[11px] text-zinc-400 font-medium mr-1.5">Velocidad:</label>
+                    <select id="speech-rate" onchange="updateSpeechRate(this.value)" class="bg-transparent text-xs text-yellow-400 font-bold focus:outline-none cursor-pointer">
+                        <option value="0.8" class="bg-zinc-900">0.8x</option>
+                        <option value="1.0" selected class="bg-zinc-900">1.0x</option>
+                        <option value="1.25" class="bg-zinc-900">1.25x</option>
+                        <option value="1.5" class="bg-zinc-900">1.5x</option>
+                    </select>
+                </div>
+
+                <!-- Voice Selection -->
+                <div class="flex items-center bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1">
+                    <label for="voice-select" class="text-[11px] text-zinc-400 font-medium mr-1.5">Voz:</label>
+                    <select id="voice-select" onchange="changeVoice()" class="bg-transparent text-xs text-sky-400 font-bold focus:outline-none max-w-[130px] truncate cursor-pointer">
+                        <option value="" class="bg-zinc-900">Cargando...</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <main id="main-content" class="max-w-7xl mx-auto p-4 sm:p-6 flex-grow w-full space-y-10" role="main" tabindex="-1">
+
+        <!-- Welcome Banner Section -->
+        <section id="sec-intro" class="glass-card p-6 sm:p-8 relative overflow-hidden" aria-labelledby="heading-intro">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
+                <div class="space-y-4 max-w-2xl">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-xs font-semibold">
+                        <i class="fa-solid fa-sparkles text-xs"></i>
+                        <span>Aprende Telemática mediante Audio e Interacción</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <h2 id="heading-intro" class="text-3xl sm:text-4xl font-black text-yellow-400 tracking-tight">
+                            Ciencia de la Telemática
+                        </h2>
+                        <button onclick="readSection('sec-intro')" class="accessible-btn p-2.5 bg-yellow-400 text-black rounded-xl hover:scale-105" aria-label="Escuchar esta introducción en voz alta">
+                            <i class="fa-solid fa-volume-high text-lg"></i>
+                        </button>
+                    </div>
+
+                    <p class="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal">
+                        Plataforma adaptada para estudiantes ciegos y con baja visión. Combina explicaciones guiadas por síntesis de voz, gráficos vectoriales narrados, fotografías explicativas, señalética sonora y atajos de teclado prácticos.
+                    </p>
+
+                    <div class="p-3 bg-zinc-950 border border-zinc-800 rounded-xl text-xs text-sky-300 font-medium flex items-center space-x-2">
+                        <i class="fa-solid fa-lightbulb text-yellow-400 text-base"></i>
+                        <span>Atajos rápidos: Usa <kbd class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-yellow-400 font-bold">Alt + P</kbd> para reproducir/pausar la lectura, y <kbd class="px-2 py-0.5 bg-zinc-900 border border-zinc-700 rounded text-yellow-400 font-bold">Alt + S</kbd> para detenerla.</span>
+                    </div>
+                </div>
+
+                <!-- Hero Image & Animated Wave Indicator -->
+                <div class="flex flex-col items-center gap-4 w-full lg:w-auto">
+                    <div class="relative group rounded-2xl overflow-hidden border-2 border-zinc-800 hover:border-yellow-400 transition-all max-w-xs shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=600&q=80" 
+                             alt="Fotografía conceptual de la red de datos global cubriendo la Tierra con líneas digitales de luz" 
+                             onerror="this.src='https://placehold.co/600x400/121215/facc15?text=Red+Global+de+Telem%C3%A1tica'" 
+                             class="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105">
+                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent p-3 text-center">
+                            <span class="text-[11px] font-bold text-sky-400 block">Red Digital Mundial</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-center space-x-2 bg-zinc-950 border border-zinc-800 p-4 rounded-2xl w-full max-w-xs shadow-inner" aria-hidden="true">
+                        <span class="wave-bar h-6"></span>
+                        <span class="wave-bar h-10"></span>
+                        <span class="wave-bar h-14"></span>
+                        <span class="wave-bar h-8"></span>
+                        <span class="wave-bar h-12"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Audiodescribed Diagrams -->
+        <section id="sec-diagrams" class="glass-card p-6 sm:p-8 space-y-6" aria-labelledby="heading-diagrams">
+            <div class="flex items-center justify-between flex-wrap gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                    <h2 id="heading-diagrams" class="text-2xl font-bold text-yellow-400 flex items-center gap-2">
+                        <i class="fa-solid fa-diagram-project text-sky-400"></i>
+                        Esquemas Conceptuales Audiodescritos
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-1">Representaciones visuales simples con audiodescripción en texto y voz.</p>
+                </div>
+                <button onclick="readSection('sec-diagrams')" class="accessible-btn px-3.5 py-2 bg-zinc-900 hover:bg-zinc-800 text-yellow-400 text-xs font-bold rounded-xl" aria-label="Escuchar explicación de los esquemas">
+                    <i class="fa-solid fa-volume-high mr-1.5"></i> Escuchar Sección
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Diagram 1 -->
+                <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-2xl space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">1. La Fórmula de la Telemática</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                        <div class="bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl flex justify-center items-center h-44">
+                            <svg width="220" height="130" viewBox="0 0 280 150" role="img" aria-label="Diagrama: Telecomunicaciones más Informática igual a Telemática">
+                                <circle cx="80" cy="75" r="48" fill="none" stroke="#facc15" stroke-width="3" />
+                                <text x="80" y="72" text-anchor="middle" fill="#facc15" font-weight="bold" font-size="12">Telecom</text>
+                                <text x="80" y="88" text-anchor="middle" fill="#a1a1aa" font-size="10">(Señales)</text>
+                                
+                                <text x="140" y="82" text-anchor="middle" fill="#38bdf8" font-size="26" font-weight="bold">+</text>
+
+                                <circle cx="200" cy="75" r="48" fill="none" stroke="#38bdf8" stroke-width="3" />
+                                <text x="200" y="72" text-anchor="middle" fill="#38bdf8" font-weight="bold" font-size="12">Informática</text>
+                                <text x="200" y="88" text-anchor="middle" fill="#a1a1aa" font-size="10">(Datos)</text>
+                            </svg>
+                        </div>
+                        <div class="rounded-xl overflow-hidden border border-zinc-800 h-44 relative">
+                            <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Placa de circuito e infraestructura de microprocesadores representando la tecnología de computación" 
+                                 onerror="this.src='https://placehold.co/600x400/121215/38bdf8?text=Hardware+e+Informatica'" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <button onclick="speakAudioDescription('desc-diagram-1')" class="accessible-btn w-full py-2.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 font-extrabold text-xs rounded-xl flex items-center justify-center space-x-2 border-sky-500/30" aria-label="Escuchar descripción detallada del Esquema 1">
+                        <i class="fa-solid fa-audio-description text-sm"></i>
+                        <span>Audiodescripción del Esquema 1</span>
+                    </button>
+                    <p id="desc-diagram-1" class="text-xs text-zinc-300 leading-relaxed bg-zinc-900/80 p-3 rounded-xl border border-zinc-800">
+                        <strong>Descripción 1:</strong> Muestra la convergencia de dos áreas. A la izquierda, un gráfico vectorial con dos círculos entrelazados (Telecomunicaciones e Informática). A la derecha, una fotografía real de alta resolución que ilustra microcircuitos integrados y conexiones de alta frecuencia.
+                    </p>
+                </div>
+
+                <!-- Diagram 2 -->
+                <div class="bg-zinc-950 border border-zinc-800 p-5 rounded-2xl space-y-4">
+                    <h3 class="text-lg font-bold text-sky-400">2. Canales de Datos Globales</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+                        <div class="bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl flex justify-center items-center h-44">
+                            <svg width="220" height="130" viewBox="0 0 280 150" role="img" aria-label="Diagrama: Satélite y Cable de Fibra Óptica conectando dos nodos">
+                                <polygon points="140,15 155,30 125,30" fill="#facc15" />
+                                <line x1="140" y1="30" x2="140" y2="60" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4" />
+                                <path d="M 30 110 Q 140 140 250 110" fill="none" stroke="#facc15" stroke-width="4" />
+                                <circle cx="30" cy="110" r="12" fill="#38bdf8" />
+                                <circle cx="250" cy="110" r="12" fill="#38bdf8" />
+                                <text x="30" y="114" text-anchor="middle" fill="#000" font-weight="bold" font-size="10">A</text>
+                                <text x="250" y="114" text-anchor="middle" fill="#000" font-weight="bold" font-size="10">B</text>
+                            </svg>
+                        </div>
+                        <div class="rounded-xl overflow-hidden border border-zinc-800 h-44 relative">
+                            <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Cables de fibra óptica brillantes iluminados por haces de luz azul y dorada" 
+                                 onerror="this.src='https://placehold.co/600x400/121215/facc15?text=Fibra+Optica+Luz'" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <button onclick="speakAudioDescription('desc-diagram-2')" class="accessible-btn w-full py-2.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 font-extrabold text-xs rounded-xl flex items-center justify-center space-x-2 border-sky-500/30" aria-label="Escuchar descripción detallada del Esquema 2">
+                        <i class="fa-solid fa-audio-description text-sm"></i>
+                        <span>Audiodescripción del Esquema 2</span>
+                    </button>
+                    <p id="desc-diagram-2" class="text-xs text-zinc-300 leading-relaxed bg-zinc-900/80 p-3 rounded-xl border border-zinc-800">
+                        <strong>Descripción 2:</strong> Muestra la interconexión entre dos puntos etiquetados como Nodo A y Nodo B. Incluye un esquema de enlace por satélite y una fotografía real de cables de fibra óptica brillando con impulsos lumínicos.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Module 1 -->
+        <article id="mod-1" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod1">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">01</span>
+                    <h2 id="heading-mod1" class="text-2xl font-bold text-yellow-400">¿Qué es la Telemática?</h2>
+                </div>
+                <button onclick="readSection('mod-1')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 1 completo">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="md:col-span-2 space-y-4 text-base text-zinc-300 leading-relaxed">
+                    <p>
+                        La palabra <strong>Telemática</strong> surge del enlace entre <strong>TELEcomunicaciones</strong> e Infor<strong>MÁTICA</strong>. Fue concebida para definir la integración de los ordenadores con las redes de transmisión a distancia.
+                    </p>
+                    <p>
+                        Mientras la <em>informática</em> procesa y gestiona datos automáticamente, la <em>telecomunicación</em> suministra los medios físicos necesarios para transportar esa información a través del espacio.
+                    </p>
+                    
+                    <div class="bg-zinc-950 border-l-4 border-sky-400 p-4 rounded-r-xl space-y-1">
+                        <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider">Concepto Clave</h3>
+                        <p class="text-sm">
+                            Un <strong>Dato</strong> es información digital (ceros y unos). Una <strong>Señal</strong> es el impulso físico (eléctrico, luz u onda de radio) que transporta dichos datos.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="rounded-2xl overflow-hidden border border-zinc-800 shadow-xl group">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" 
+                         alt="Matriz digital de código binario fluyendo en un servidor central" 
+                         onerror="this.src='https://placehold.co/600x400/121215/facc15?text=Flujo+de+Datos'" 
+                         class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105">
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 2 -->
+        <article id="mod-2" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod2">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">02</span>
+                    <h2 id="heading-mod2" class="text-2xl font-bold text-yellow-400">Medios de Transmisión</h2>
+                </div>
+                <button onclick="readSection('mod-2')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 2">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-base text-zinc-300 leading-relaxed">
+                <p>
+                    Para conectar dispositivos, empleamos dos vías principales: <strong>Medios Guiados</strong> (cables físicos) y <strong>Medios No Guiados</strong> (ondas por el aire).
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-3">
+                        <div class="h-36 rounded-xl overflow-hidden border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Fibra óptica brillante conduciendo señales luminosas" 
+                                 onerror="this.src='https://placehold.co/600x300/121215/38bdf8?text=Medios+Guiados'" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-base font-bold text-yellow-400 flex items-center gap-2">
+                            <i class="fa-solid fa-cable-car text-sky-400"></i> Medios Guiados
+                        </h3>
+                        <p class="text-xs text-zinc-400">
+                            <strong>Fibra Óptica:</strong> Transmite pulsos de luz en hilos de vidrio ultraligeros sin interferencias.<br>
+                            <strong>Cable UTP:</strong> Cobre trenzado típico en redes locales (LAN).
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl space-y-3">
+                        <div class="h-36 rounded-xl overflow-hidden border border-zinc-800">
+                            <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?auto=format&fit=crop&w=600&q=80" 
+                                 alt="Satélite de comunicaciones en la órbita terrestre transmitiendo ondas" 
+                                 onerror="this.src='https://placehold.co/600x300/121215/facc15?text=Medios+No+Guiados'" 
+                                 class="w-full h-full object-cover">
+                        </div>
+                        <h3 class="text-base font-bold text-yellow-400 flex items-center gap-2">
+                            <i class="fa-solid fa-tower-cell text-sky-400"></i> Medios No Guiados
+                        </h3>
+                        <p class="text-xs text-zinc-400">
+                            <strong>Wi-Fi y Radio:</strong> Ondas electromagnéticas invisibles por el aire.<br>
+                            <strong>Satélites:</strong> Estaciones orbitales que retransmiten señales a nivel planetario.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 3 -->
+        <article id="mod-3" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod3">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">03</span>
+                    <h2 id="heading-mod3" class="text-2xl font-bold text-yellow-400">Arquitectura y Protocolos</h2>
+                </div>
+                <button onclick="readSection('mod-3')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 3">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                <div class="rounded-2xl overflow-hidden border border-zinc-800 shadow-xl group order-2 md:order-1">
+                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" 
+                         alt="Servidores y conmutadores de red interconectados mediante cables Ethernet" 
+                         onerror="this.src='https://placehold.co/600x400/121215/38bdf8?text=Routers+y+Switches'" 
+                         class="w-full h-56 object-cover transition-transform duration-500 group-hover:scale-105">
+                </div>
+
+                <div class="md:col-span-2 space-y-4 text-base text-zinc-300 leading-relaxed order-1 md:order-2">
+                    <p>
+                        Los <strong>Protocolos</strong> son las reglas universales que permiten a dispositivos de cualquier fabricante entenderse entre sí en la red.
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                            <h3 class="text-sm font-bold text-sky-400">Modelo TCP/IP</h3>
+                            <p class="text-xs text-zinc-400">
+                                Estándar práctico de 4 capas utilizado universalmente para estructurar y empaquetar datos en Internet.
+                            </p>
+                        </div>
+
+                        <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                            <h3 class="text-sm font-bold text-sky-400">Routers y Switches</h3>
+                            <p class="text-xs text-zinc-400">
+                                El <strong>Switch</strong> conecta equipos locales. El <strong>Router</strong> interconecta redes distintas calculando la mejor ruta.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 4 -->
+        <article id="mod-4" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">04</span>
+                    <h2 id="heading-mod4" class="text-2xl font-bold text-yellow-400">Aplicaciones Prácticas</h2>
+                </div>
+                <button onclick="readSection('mod-4')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 4">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+                <div class="bg-zinc-950 p-4 border border-zinc-800 rounded-2xl space-y-3">
+                    <div class="h-32 rounded-xl overflow-hidden border border-zinc-800">
+                        <img src="https://images.unsplash.com/photo-1563770660941-20978e870e26?auto=format&fit=crop&w=600&q=80" 
+                             alt="Navegación GPS y mapas digitales interactivos en pantalla" 
+                             onerror="this.src='https://placehold.co/600x300/121215/facc15?text=GPS+Accesible'" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot"></i> GPS Accesible
+                    </h3>
+                    <p class="text-zinc-400 leading-relaxed">Guía por voz precisa en tiempo real para desplazamientos autónomos e itinerarios seguros.</p>
+                </div>
+
+                <div class="bg-zinc-950 p-4 border border-zinc-800 rounded-2xl space-y-3">
+                    <div class="h-32 rounded-xl overflow-hidden border border-zinc-800">
+                        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" 
+                             alt="Dispositivos inteligentes e Internet de las cosas interconectados" 
+                             onerror="this.src='https://placehold.co/600x300/121215/38bdf8?text=IoT+Inteligente'" 
+                             class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                        <i class="fa-solid fa-house-signal"></i> Internet de las Cosas (IoT)
+                    </h3>
+                    <p class="text-zinc-400 leading-relaxed">Dispositivos del hogar interconectados que emiten alertas audibles y automatizan tareas.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 2 -->
+        <article id="mod-2" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod2">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">02</span>
+                    <h2 id="heading-mod2" class="text-2xl font-bold text-yellow-400">Medios de Transmisión</h2>
+                </div>
+                <button onclick="readSection('mod-2')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 2">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-base text-zinc-300 leading-relaxed">
+                <p>
+                    Para conectar dispositivos, empleamos dos vías principales: <strong>Medios Guiados</strong> (cables físicos) y <strong>Medios No Guiados</strong> (ondas por el aire).
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                        <h3 class="text-base font-bold text-yellow-400 flex items-center gap-2">
+                            <i class="fa-solid fa-cable-car text-sky-400"></i> Medios Guiados
+                        </h3>
+                        <p class="text-xs text-zinc-400">
+                            <strong>Fibra Óptica:</strong> Transmite pulsos de luz en hilos de vidrio ultraligeros sin interferencias.<br>
+                            <strong>Cable UTP:</strong> Cobre trenzado típico en redes locales (LAN).
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-2">
+                        <h3 class="text-base font-bold text-yellow-400 flex items-center gap-2">
+                            <i class="fa-solid fa-tower-cell text-sky-400"></i> Medios No Guiados
+                        </h3>
+                        <p class="text-xs text-zinc-400">
+                            <strong>Wi-Fi y Radio:</strong> Ondas electromagnéticas invisibles por el aire.<br>
+                            <strong>Satélites:</strong> Estaciones orbitales que retransmiten señales a nivel planetario.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 3 -->
+        <article id="mod-3" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod3">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">03</span>
+                    <h2 id="heading-mod3" class="text-2xl font-bold text-yellow-400">Arquitectura y Protocolos</h2>
+                </div>
+                <button onclick="readSection('mod-3')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 3">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-base text-zinc-300 leading-relaxed">
+                <p>
+                    Los <strong>Protocolos</strong> son las reglas universales que permiten a dispositivos de cualquier fabricante entenderse entre sí en la red.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                        <h3 class="text-sm font-bold text-sky-400">Modelo TCP/IP</h3>
+                        <p class="text-xs text-zinc-400">
+                            Estándar práctico de 4 capas utilizado universalmente para estructurar y empaquetar datos en Internet.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-xl space-y-1">
+                        <h3 class="text-sm font-bold text-sky-400">Routers y Switches</h3>
+                        <p class="text-xs text-zinc-400">
+                            El <strong>Switch</strong> conecta equipos locales. El <strong>Router</strong> interconecta redes distintas calculando la mejor ruta.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        <!-- Module 4 -->
+        <article id="mod-4" class="glass-card p-6 sm:p-8 space-y-4" aria-labelledby="heading-mod4">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3">
+                    <span class="text-xs font-black text-black bg-yellow-400 px-2.5 py-1 rounded-lg">04</span>
+                    <h2 id="heading-mod4" class="text-2xl font-bold text-yellow-400">Aplicaciones Prácticas</h2>
+                </div>
+                <button onclick="readSection('mod-4')" class="accessible-btn px-3 py-1.5 bg-zinc-900 text-yellow-400 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Escuchar Módulo 4">
+                    <i class="fa-solid fa-volume-high text-xs"></i>
+                    <span>Escuchar Módulo</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div class="bg-zinc-950 p-4 border border-zinc-800 rounded-xl space-y-1">
+                    <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                        <i class="fa-solid fa-location-dot"></i> GPS Accesible
+                    </h3>
+                    <p class="text-zinc-400">Guía por voz precisa en tiempo real para desplazamientos autónomos.</p>
+                </div>
+
+                <div class="bg-zinc-950 p-4 border border-zinc-800 rounded-xl space-y-1">
+                    <h3 class="text-sm font-bold text-sky-400 flex items-center gap-2">
+                        <i class="fa-solid fa-house-signal"></i> Internet de las Cosas (IoT)
+                    </h3>
+                    <p class="text-zinc-400">Dispositivos del hogar interconectados que emiten alertas audibles.</p>
+                </div>
+            </div>
+        </article>
+
+        <!-- Talking Glossary Section -->
+        <section id="sec-glossary" class="glass-card p-6 sm:p-8 space-y-6" aria-labelledby="heading-glossary">
+            <div class="flex items-center justify-between flex-wrap gap-3 border-b border-zinc-800 pb-4">
+                <div>
+                    <h2 id="heading-glossary" class="text-2xl font-bold text-yellow-400 flex items-center gap-2">
+                        <i class="fa-solid fa-book-bookmark text-sky-400"></i>
+                        Glosario Parlante
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-1">Selecciona cualquier término técnico para escuchar su significado.</p>
+                </div>
+                <button onclick="readSection('sec-glossary')" class="accessible-btn px-3.5 py-2 bg-zinc-900 text-yellow-400 text-xs font-bold rounded-xl" aria-label="Escuchar glosario completo">
+                    <i class="fa-solid fa-volume-high mr-1.5"></i> Escuchar Sección
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="glossary-grid">
+                <!-- Terms dynamically rendered -->
+            </div>
+        </section>
+
+        <!-- Audiodescribed Story Player Section -->
+        <section id="sec-audio-player" class="glass-card p-6 sm:p-8 space-y-6 border-sky-500/30" aria-labelledby="heading-audio-player">
+            <div class="flex items-center justify-between flex-wrap gap-3 border-b border-zinc-800 pb-4">
+                <div>
+                    <h2 id="heading-audio-player" class="text-2xl font-bold text-yellow-400 flex items-center gap-2">
+                        <i class="fa-solid fa-film text-sky-400"></i>
+                        Vídeo Auditivo Narrado
+                    </h2>
+                    <p class="text-xs text-zinc-400 mt-1">Experiencia sonora inmersiva con espectro de audio en vivo.</p>
+                </div>
+                <span class="text-xs font-bold text-sky-400 bg-sky-500/10 border border-sky-500/20 px-3 py-1 rounded-full">Audiodescripción Sincronizada</span>
+            </div>
+
+            <div class="bg-zinc-950 border border-zinc-800 p-6 rounded-2xl space-y-6">
+                <div class="text-center space-y-1">
+                    <h3 class="text-xl font-extrabold text-sky-400">
+                        "Cómo viaja un Correo Electrónico por el Mundo"
+                    </h3>
+                    <p class="text-xs text-zinc-400">Viaje narrado en 5 pasos desde tu teclado hasta el destino.</p>
+                </div>
+
+                <!-- Animated Waveform Canvas Visualizer -->
+                <div class="bg-zinc-900/50 border border-zinc-800 rounded-xl p-4 flex flex-col items-center">
+                    <canvas id="waveform-canvas" width="600" height="90" class="w-full max-w-xl h-24 bg-zinc-950 rounded-lg border border-zinc-800 mb-3" aria-label="Espectro visual animado de onda sonora"></canvas>
+                    
+                    <!-- Dynamic Transcript Subtitle Box -->
+                    <div id="video-transcript-box" class="w-full bg-zinc-950 p-4 border border-zinc-800 rounded-xl text-center min-h-[70px] flex items-center justify-center">
+                        <p id="video-caption-text" class="text-sm font-bold text-yellow-400">
+                            Presiona "Iniciar Vídeo Auditivo" para comenzar.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                    <button id="story-play-btn" onclick="startAuditoryVideo()" class="accessible-btn px-5 py-2.5 bg-yellow-400 hover:bg-yellow-300 text-black font-extrabold text-xs rounded-xl flex items-center space-x-2" aria-label="Iniciar reproducción del vídeo auditivo narrado">
+                        <i class="fa-solid fa-play"></i>
+                        <span>Iniciar Vídeo Auditivo</span>
+                    </button>
+
+                    <button onclick="stopAuditoryVideo()" class="accessible-btn px-4 py-2.5 bg-rose-950 border border-rose-800 text-rose-200 font-bold text-xs rounded-xl flex items-center space-x-1.5" aria-label="Detener vídeo auditivo">
+                        <i class="fa-solid fa-square"></i>
+                        <span>Detener</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal Help Dialog -->
+    <div id="help-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="bg-zinc-950 border border-zinc-800 p-6 rounded-2xl max-w-xl w-full space-y-5 text-zinc-100 max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
+                <h2 id="modal-title" class="text-xl font-bold text-yellow-400 flex items-center gap-2">
+                    <i class="fa-solid fa-universal-access text-sky-400"></i>
+                    Atajos y Accesibilidad
+                </h2>
+                <button onclick="closeHelpModal()" class="accessible-btn p-1.5 bg-zinc-900 text-zinc-400 hover:text-white rounded-lg text-sm font-bold" aria-label="Cerrar ventana de ayuda">
+                    ✕
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs text-zinc-300">
+                <p class="text-yellow-400 font-semibold">Optimizada para navegadores de escritorio y lectores de pantalla (NVDA, JAWS, TalkBack, VoiceOver).</p>
+
+                <div class="bg-zinc-900 p-3 rounded-xl border border-zinc-800 space-y-2">
+                    <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider">Teclas Rápidas:</h3>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex justify-between border-b border-zinc-800 pb-1">
+                            <span class="font-bold text-yellow-400">Alt + P</span>
+                            <span>Reproducir / Pausar lectura global</span>
+                        </li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-1">
+                            <span class="font-bold text-yellow-400">Alt + S</span>
+                            <span>Detener voz sintetizada</span>
+                        </li>
+                        <li class="flex justify-between border-b border-zinc-800 pb-1">
+                            <span class="font-bold text-yellow-400">Alt + H</span>
+                            <span>Abrir / Cerrar esta ventana</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span class="font-bold text-yellow-400">Tab / Shift + Tab</span>
+                            <span>Navegar por controles interactivos</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button onclick="closeHelpModal()" class="accessible-btn w-full py-2.5 bg-yellow-400 text-black font-extrabold text-xs rounded-xl">
+                Entendido
+            </button>
+        </div>
+    </div>
+
+    <!-- Page Footer -->
+    <footer class="bg-zinc-950 border-t border-zinc-800 p-6 text-center text-zinc-400 space-y-2" role="contentinfo">
+        <p class="font-bold text-yellow-400 text-sm">
+            Telemática SoundEdu &copy; 2026 - Educación Accesible sin Barreras
+        </p>
+        <p class="text-xs max-w-2xl mx-auto text-zinc-500">
+            Conforme a las pautas WCAG 2.1 Nivel AAA. Explicaciones con soporte completo de audio y sintesis de voz Web Speech API.
+        </p>
+    </footer>
+
+    <script>
+        /* -------------------------------------------------------------
+           1. WEB AUDIO API SYNTHESIZER
+           ------------------------------------------------------------- */
+        let audioCtx = null;
+        let sfxEnabled = true;
+
+        function initAudioContext() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playTone(freq, duration, type = 'sine', gainVal = 0.08) {
+            if (!sfxEnabled) return;
+            try {
+                initAudioContext();
+                if (!audioCtx) return;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+                gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio FX exception:", e);
+            }
+        }
+
+        function playFocusSound() { playTone(440, 0.06, 'sine', 0.04); }
+        function playClickSound() { playTone(580, 0.08, 'triangle', 0.08); }
+        function playSettingSound() { playTone(880, 0.08, 'sine', 0.06); }
+
+        function toggleSFX() {
+            sfxEnabled = !sfxEnabled;
+            const btnText = document.getElementById('sfx-status-text');
+            const btnIcon = document.getElementById('sfx-icon');
+            const btn = document.getElementById('sfx-toggle-btn');
+
+            if (sfxEnabled) {
+                btnText.textContent = "Audio FX";
+                btnIcon.className = "fa-solid fa-volume-high text-sky-400";
+                btn.setAttribute("aria-label", "Efectos de sonido activados. Presiona para silenciar");
+                playSettingSound();
+                announceToScreenReader("Efectos de sonido activados");
+            } else {
+                btnText.textContent = "Sin FX";
+                btnIcon.className = "fa-solid fa-volume-xmark text-rose-500";
+                btn.setAttribute("aria-label", "Efectos de sonido desactivados. Presiona para activar");
+                announceToScreenReader("Efectos de sonido desactivados");
+            }
+        }
+
+        /* -------------------------------------------------------------
+           2. WEB SPEECH API (TEXT TO SPEECH ENGINE)
+           ------------------------------------------------------------- */
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let speechRate = 1.0;
+        let selectedVoice = null;
+        let activeHighlightedElem = null;
+        let isUserCancelled = false;
+
+        function loadVoices() {
+            if (!synth) return;
+            voices = synth.getVoices();
+            const voiceSelect = document.getElementById('voice-select');
+            if (!voiceSelect) return;
+            voiceSelect.innerHTML = '';
+
+            const esVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('es'));
+            const displayVoices = esVoices.length > 0 ? esVoices : voices;
+
+            displayVoices.forEach((v, index) => {
+                const opt = document.createElement('option');
+                opt.value = v.name;
+                opt.textContent = `${v.name} (${v.lang})`;
+                opt.className = "bg-zinc-900";
+                if (v.default || index === 0) opt.selected = true;
+                voiceSelect.appendChild(opt);
+            });
+
+            if (displayVoices.length > 0) {
+                selectedVoice = displayVoices[0];
+            }
+        }
+
+        if (synth) {
+            loadVoices();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = loadVoices;
+            }
+        }
+
+        function changeVoice() {
+            const voiceSelect = document.getElementById('voice-select');
+            if (!voiceSelect) return;
+            selectedVoice = voices.find(v => v.name === voiceSelect.value) || null;
+            playSettingSound();
+            announceToScreenReader(`Voz cambiada a ${selectedVoice ? selectedVoice.name : ''}`);
+        }
+
+        function updateSpeechRate(val) {
+            speechRate = parseFloat(val);
+            playSettingSound();
+            announceToScreenReader(`Velocidad de voz ajustada a ${val} X`);
+        }
+
+        function clearHighlight() {
+            if (activeHighlightedElem) {
+                activeHighlightedElem.classList.remove('speech-active');
+                activeHighlightedElem = null;
+            }
+        }
+
+        function stopSpeech() {
+            isUserCancelled = true;
+            if (synth) synth.cancel();
+            clearHighlight();
+            updateTTSStatus("Listo");
+            setWaveAnimState(false);
+            const pauseBtnText = document.getElementById('pause-btn-text');
+            const pauseIcon = document.getElementById('pause-icon');
+            if (pauseBtnText && pauseIcon) {
+                pauseBtnText.textContent = "Pausar";
+                pauseIcon.className = "fa-solid fa-pause";
+            }
+        }
+
+        function togglePauseResumeSpeech() {
+            if (!synth) return;
+            const pauseBtnText = document.getElementById('pause-btn-text');
+            const pauseIcon = document.getElementById('pause-icon');
+
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                updateTTSStatus("Pausado");
+                pauseBtnText.textContent = "Reanudar";
+                pauseIcon.className = "fa-solid fa-play";
+                setWaveAnimState(false);
+                playSettingSound();
+            } else if (synth.paused) {
+                synth.resume();
+                updateTTSStatus("Leyendo...");
+                pauseBtnText.textContent = "Pausar";
+                pauseIcon.className = "fa-solid fa-pause";
+                setWaveAnimState(true);
+                playSettingSound();
+            } else {
+                readEntirePage();
+            }
+        }
+
+        function updateTTSStatus(statusMsg) {
+            const statusElem = document.getElementById('tts-status');
+            if (statusElem) statusElem.textContent = statusMsg;
+        }
+
+        function setWaveAnimState(isMoving) {
+            const bars = document.querySelectorAll('.wave-bar');
+            bars.forEach(b => {
+                if (isMoving) b.classList.remove('wave-paused');
+                else b.classList.add('wave-paused');
+            });
+        }
+
+        function announceToScreenReader(msg) {
+            const announcer = document.getElementById('sr-announcer');
+            if (announcer) announcer.textContent = msg;
+        }
+
+        function splitTextIntoChunks(text) {
+            if (!text) return [];
+            const rawChunks = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+            const chunks = [];
+            for (let chunk of rawChunks) {
+                chunk = chunk.trim();
+                if (chunk.length > 180) {
+                    const subParts = chunk.match(/.{1,160}(?:\s+|$)/g) || [chunk];
+                    subParts.forEach(p => p.trim() && chunks.push(p.trim()));
+                } else if (chunk.length > 0) {
+                    chunks.push(chunk);
+                }
+            }
+            return chunks.length > 0 ? chunks : [text];
+        }
+
+        function speakText(text, highlightElem = null, onEndCallback = null) {
+            if (!synth) return;
+
+            stopSpeech();
+            isUserCancelled = false;
+
+            if (!text || text.trim().length === 0) return;
+
+            const chunks = splitTextIntoChunks(text);
+            let currentChunkIndex = 0;
+
+            if (highlightElem) {
+                clearHighlight();
+                activeHighlightedElem = highlightElem;
+                activeHighlightedElem.classList.add('speech-active');
+                activeHighlightedElem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            updateTTSStatus("Leyendo...");
+            setWaveAnimState(true);
+
+            function speakNextChunk() {
+                if (isUserCancelled || currentChunkIndex >= chunks.length) {
+                    if (!isUserCancelled) {
+                        updateTTSStatus("Listo");
+                        clearHighlight();
+                        setWaveAnimState(false);
+                        if (onEndCallback) onEndCallback();
+                    }
+                    return;
+                }
+
+                const chunkText = chunks[currentChunkIndex];
+                const utterance = new SpeechSynthesisUtterance(chunkText);
+                utterance.rate = speechRate;
+                if (selectedVoice) utterance.voice = selectedVoice;
+                utterance.lang = selectedVoice ? selectedVoice.lang : 'es-ES';
+
+                utterance.onend = () => {
+                    if (!isUserCancelled) {
+                        currentChunkIndex++;
+                        speakNextChunk();
+                    }
+                };
+
+                utterance.onerror = (e) => {
+                    if (e.error === 'interrupted' || e.error === 'canceled' || isUserCancelled) return;
+                    if (!isUserCancelled) {
+                        currentChunkIndex++;
+                        speakNextChunk();
+                    }
+                };
+
+                synth.speak(utterance);
+            }
+
+            speakNextChunk();
+        }
+
+        function readSection(sectionId) {
+            playClickSound();
+            const section = document.getElementById(sectionId);
+            if (!section) return;
+
+            const elements = section.querySelectorAll('h2, h3, p, li');
+            let fullText = "";
+            elements.forEach(el => { fullText += el.innerText + ". "; });
+
+            speakText(fullText, section);
+        }
+
+        function readEntirePage() {
+            playClickSound();
+            const main = document.getElementById('main-content');
+            if (!main) return;
+
+            const text = "Iniciando lectura de la página completa de Telemática SoundEdu. " + main.innerText;
+            speakText(text);
+        }
+
+        function speakAudioDescription(descId) {
+            playClickSound();
+            const descElem = document.getElementById(descId);
+            if (descElem) speakText(descElem.innerText, descElem);
+        }
+
+        /* -------------------------------------------------------------
+           3. HIGH CONTRAST & FONT SIZE CONTROLLERS
+           ------------------------------------------------------------- */
+        let fontScale = 1.0;
+
+        function adjustFontSize(delta) {
+            fontScale = Math.min(Math.max(fontScale + delta, 0.8), 1.5);
+            document.documentElement.style.setProperty('--font-scale', `${fontScale}rem`);
+            playSettingSound();
+            announceToScreenReader(`Tamaño de fuente cambiado a ${Math.round(fontScale * 100)} por ciento`);
+        }
+
+        function resetFontSize() {
+            fontScale = 1.0;
+            document.documentElement.style.setProperty('--font-scale', '1rem');
+            playSettingSound();
+            announceToScreenReader("Tamaño de fuente restablecido");
+        }
+
+        function changeTheme(themeClass) {
+            document.documentElement.className = themeClass;
+            playSettingSound();
+            announceToScreenReader(`Tema cambiado a ${themeClass}`);
+        }
+
+        /* -------------------------------------------------------------
+           4. KEYBOARD SHORTCUTS & MODAL HELP
+           ------------------------------------------------------------- */
+        function openHelpModal() {
+            playClickSound();
+            const modal = document.getElementById('help-modal');
+            modal.classList.remove('hidden');
+            modal.querySelector('button').focus();
+            speakText("Ventana de Ayuda de Atajos de Teclado. Usa Escape para cerrar.");
+        }
+
+        function closeHelpModal() {
+            playClickSound();
+            document.getElementById('help-modal').classList.add('hidden');
+            stopSpeech();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('help-modal');
+                if (!modal.classList.contains('hidden')) closeHelpModal();
+            }
+
+            if (e.altKey) {
+                switch (e.key.toLowerCase()) {
+                    case 'p':
+                        e.preventDefault();
+                        togglePauseResumeSpeech();
+                        break;
+                    case 's':
+                        e.preventDefault();
+                        stopSpeech();
+                        announceToScreenReader("Lectura detenida");
+                        break;
+                    case 'h':
+                        e.preventDefault();
+                        const modal = document.getElementById('help-modal');
+                        if (modal.classList.contains('hidden')) openHelpModal();
+                        else closeHelpModal();
+                        break;
+                }
+            }
+        });
+
+        /* -------------------------------------------------------------
+           5. TALKING GLOSSARY DATA & RENDERING
+           ------------------------------------------------------------- */
+        const glossaryData = [
+            { term: "Latencia", def: "El tiempo exacto de retardo que tarda un paquete de datos en viajar desde su origen hasta su destino." },
+            { term: "Ancho de Banda", def: "La capacidad máxima de datos que pueden ser transmitidos a través de una conexión en un periodo determinado." },
+            { term: "Paquete de Datos", def: "La unidad fundamental de información formateada que se transmite a través de una red." },
+            { term: "Servidor", def: "Un sistema informático especializado que provee datos o aplicaciones a otros ordenadores clientes." },
+            { term: "Enrutamiento", def: "El proceso de seleccionar el camino óptimo en una red para enviar los paquetes de datos." },
+            { term: "Dirección IP", def: "Una etiqueta numérica única que identifica a un dispositivo conectado a la red." }
+        ];
+
+        function renderGlossary() {
+            const grid = document.getElementById('glossary-grid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            glossaryData.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "bg-zinc-950 border border-zinc-800 p-4 rounded-xl space-y-2 flex flex-col justify-between hover:border-yellow-400/50 transition-all";
+                card.innerHTML = `
+                    <h3 class="text-base font-bold text-yellow-400 flex items-center justify-between">
+                        <span>${item.term}</span>
+                        <i class="fa-solid fa-volume-low text-sky-400 text-xs"></i>
+                    </h3>
+                    <p class="text-xs text-zinc-300 leading-relaxed">${item.def}</p>
+                    <button onclick="speakGlossaryTerm('${item.term}', '${item.def}')" class="accessible-btn w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-yellow-400 font-bold text-xs rounded-lg mt-2 flex items-center justify-center space-x-1.5" aria-label="Escuchar definición de ${item.term}">
+                        <span>🔊 Escuchar Término</span>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function speakGlossaryTerm(term, def) {
+            playClickSound();
+            speakText(`Término: ${term}. Definición: ${def}`);
+        }
+
+        /* -------------------------------------------------------------
+           6. AUDIODESCRIBED STORY PLAYER ("Cómo viaja un correo")
+           ------------------------------------------------------------- */
+        const storySteps = [
+            "Paso 1: Redactas tu mensaje. Tu teclado o lector de pantalla convierte las palabras en ceros y unos digitales.",
+            "Paso 2: Al pulsar Enviar, el protocolo SMTP divide el correo en pequeños paquetes con dirección IP de origen y destino.",
+            "Paso 3: Los paquetes viajan impulsados como luz dentro de un cable de fibra óptica submarino a velocidad extrema.",
+            "Paso 4: Un Router en el continente de destino recibe los paquetes y los reensambla instantáneamente.",
+            "Paso 5: El destinatario recibe una alerta sonora y su ordenador lee el correo intacto."
+        ];
+
+        let currentStoryIndex = 0;
+        let isStoryPlaying = false;
+
+        function startAuditoryVideo() {
+            playClickSound();
+            if (isStoryPlaying) return;
+            isStoryPlaying = true;
+            currentStoryIndex = 0;
+
+            document.getElementById('story-play-btn').disabled = true;
+            playNextStoryStep();
+        }
+
+        function playNextStoryStep() {
+            if (currentStoryIndex >= storySteps.length) {
+                document.getElementById('video-caption-text').textContent = "¡Viaje del correo completado exitosamente!";
+                speakText("El viaje del correo ha finalizado con éxito.", null, () => {
+                    stopAuditoryVideo();
+                });
+                return;
+            }
+
+            const stepText = storySteps[currentStoryIndex];
+            document.getElementById('video-caption-text').textContent = stepText;
+
+            speakText(stepText, document.getElementById('video-transcript-box'), () => {
+                currentStoryIndex++;
+                if (isStoryPlaying) {
+                    setTimeout(playNextStoryStep, 1000);
+                }
+            });
+        }
+
+        function stopAuditoryVideo() {
+            isStoryPlaying = false;
+            stopSpeech();
+            document.getElementById('story-play-btn').disabled = false;
+            document.getElementById('video-caption-text').textContent = "Presiona 'Iniciar Vídeo Auditivo' para comenzar.";
+        }
+
+        /* Canvas Waveform Animation */
+        function initCanvasWave() {
+            const canvas = document.getElementById('waveform-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function draw() {
+                requestAnimationFrame(draw);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = "#09090b";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                const numBars = 32;
+                const barWidth = canvas.width / numBars;
+
+                for (let i = 0; i < numBars; i++) {
+                    let barHeight;
+                    if (synth && synth.speaking && !synth.paused) {
+                        barHeight = Math.random() * (canvas.height - 16) + 8;
+                    } else {
+                        barHeight = 4;
+                    }
+
+                    ctx.fillStyle = i % 2 === 0 ? "#facc15" : "#38bdf8";
+                    ctx.fillRect(i * barWidth, canvas.height - barHeight, barWidth - 4, barHeight);
+                }
+            }
+            draw();
+        }
+
+        /* -------------------------------------------------------------
+           7. INITIALIZATION
+           ------------------------------------------------------------- */
+        window.onload = function() {
+            renderGlossary();
+            initCanvasWave();
+
+            const interactiveElems = document.querySelectorAll('button, a, select, input');
+            interactiveElems.forEach(el => {
+                el.addEventListener('focus', () => playFocusSound());
+            });
+
+            announceToScreenReader("Plataforma Telemática SoundEdu cargada. Presiona Alt + P para iniciar la lectura por voz.");
+        };
+    </script>
+</body>
+</html>
